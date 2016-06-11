@@ -7,23 +7,25 @@ import eventBus from './event-bus'
 const colorBoxStyle = {
   display: "inline-block",
   border: "1px solid black",
-  height: 12, width: 12, margin: 0, padding: 0,
+  verticalAlign: "middle",
+  height: 8, width: 8, margin: 0, padding: 0,
 }
 
 function LegendPin(props) {
   var value = `${props.value.toFixed(1)}v`
   return <tr>
     <td><span style={Object.assign({}, colorBoxStyle, { backgroundColor: props.color })}> </span></td>
-    <td>{props.label}</td>
     <td>{value}</td>
+    <td>{props.label}</td>
   </tr>
 }
 
 const legendStyle = {
   position: "absolute",
   float: "left",
-  left: 16, top: 64,
-  backgroundColor: "white"
+  left: 34, top: 84,
+  backgroundColor: "white",
+  fontFamily: "Roboto, sans-serif"
 }
 function Legend(props) {
   return <table style={legendStyle}>
@@ -79,7 +81,7 @@ export class Monitor extends Component {
       }
     })
 
-    var legend = <Legend pins={pins} />
+    var legend = this.props.showLegend && <Legend pins={pins} />
 
     return <div>
       {legend}
@@ -106,9 +108,9 @@ const mapStateToProps = (state) => {
     label[pin] = state.pins[pin].label
   }
 
-  var pins = Object.keys(enabled).sort()
+  var pins = Object.keys(enabled)
 
-  return { enabled, color, pins, label }
+  return { enabled, color, pins, label, showLegend: state.chart.showLegend }
 }
 
 export default connect(mapStateToProps)(Monitor)
