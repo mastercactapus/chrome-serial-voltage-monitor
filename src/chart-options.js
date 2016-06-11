@@ -2,6 +2,9 @@ import React,{Component} from 'react'
 
 import {connect} from 'react-redux'
 
+import Toggle from 'material-ui/Toggle';
+import Divider from 'material-ui/Divider';
+
 import Checkbox from 'material-ui/Checkbox';
 import Slider from 'material-ui/Slider';
 import TextField from 'material-ui/TextField';
@@ -9,12 +12,12 @@ import TextField from 'material-ui/TextField';
 import {configChart, configPin} from './actions'
 
 function PinConfig (props) {
-  var text = `Label for Pin${props.pin}`
+  var text = `Label for Analog Pin #${props.pin}`
   return <div>
     <Checkbox
       style={{display: "inline-block", width: "auto"}}
       checked={props.enabled}
-      onCeck={(e,val)=>props.configPin({enabled: val})} />
+      onCheck={(e,val)=>props.configPin({enabled: val})} />
     <TextField
       style={{display: "inline-block"}}
       floatingLabelText={text}
@@ -31,23 +34,17 @@ function PinConfig (props) {
 
 export class ChartOptions extends Component {
   render() {
-    var pins = Object.keys(this.props.pins).sort().map(pin=> <PinConfig
+    var pins = Object.keys(this.props.pins).map(pin=> <PinConfig
                                                                key={pin}
                                                                configPin={(cfg)=>this.props.configPin(pin, cfg)}
                                                                pin={pin}
                                                                {...this.props.pins[pin]} />)
-    return <div>
-      <Checkbox
-        label="Show Legend"
-        value={this.props.showLegend}
-        onChange={(e,val)=>this.props.configChart({showLegend: val})} />
-      <Slider
-        label="Number of pins"
-        min={1}
-        max={16}
-        step={1}
-        value={this.props.pinCount}
-        onChange={(e,val)=>this.props.configChart({pinCount: val})} />
+    return <div style={{padding:16}}>
+      <Toggle
+        label="Legend"
+        toggled={this.props.showLegend}
+        onToggle={(e,val)=>this.props.configChart({showLegend: val})} />
+        <Divider />
       {pins}
     </div>
   }
