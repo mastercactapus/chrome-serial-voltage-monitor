@@ -88,10 +88,10 @@ const defaultColors = [
   "#827717"
 ]
 
-function pin(num, state={label: "PIN" + num, enabled: true, multiplier: 1, color: defaultColors[num]}, action) {
+function pin(num, state={label: "A" + num, enabled: true, multiplier: 1, color: defaultColors[num]}, action) {
   switch (action.type) {
     case CONFIG_PIN:
-      if (action.pin !== num) return state;
+      if (+action.pin !== num) return state;
       return Object.assign({}, state, action.options)
   }
   return state
