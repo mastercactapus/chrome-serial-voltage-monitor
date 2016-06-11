@@ -11,9 +11,11 @@ import Subheader from 'material-ui/Subheader'
 import Popover from 'material-ui/Popover'
 
 import ChartOptions from './chart-options'
+import DeviceOptions from './device-options'
 import Monitor from './monitor'
 
 import { setDevice, setOptions, ackError } from './actions'
+
 
 
 export class Dashboard extends Component {
@@ -22,8 +24,8 @@ export class Dashboard extends Component {
     this.state = {
       chartOptionsAnchor: null,
       chartOptionsOpen: false,
-        deviceOptionsAnchor: null,
-        deviceOptionsOpen: false
+      deviceOptionsAnchor: null,
+      deviceOptionsOpen: false
     }
   }
   openChartOptions(e) {
@@ -33,6 +35,15 @@ export class Dashboard extends Component {
       chartOptionsOpen: true,
       deviceOptionsOpen: false,
       chartOptionsAnchor: e.currentTarget
+    })
+  }
+  openDeviceOptions(e) {
+    e.preventDefault()
+
+    this.setState({
+      chartOptionsOpen: false,
+      deviceOptionsOpen: true,
+      deviceOptionsAnchor: e.currentTarget
     })
   }
   setDevice (path) {
@@ -50,6 +61,7 @@ export class Dashboard extends Component {
     if (!this.props.hasSelected) devClass = "pulse"
 
     var err = this.props.error ? 'ERROR: ' + this.props.error.message : ''
+
     return <div>
              <IconMenu
                 onChange={(e,val)=>this.setDevice(val)}
@@ -58,9 +70,21 @@ export class Dashboard extends Component {
                   {devices}
              </IconMenu>
 
-             <IconButton tooltipPosition="bottom-right" tooltip="Device settings">
-               <ActionSettings />
+             <IconButton
+                onTouchTap={e=>this.openDeviceOptions(e)}
+                tooltipPosition="bottom-right"
+                tooltip="Device settings">
+              <ActionSettings />
              </IconButton>
+
+             <Popover
+                open={this.state.deviceOptionsOpen}
+                anchorEl={this.state.deviceOptionsAnchor}
+                onRequestClose={()=>this.setState({deviceOptionsOpen: false})}>
+
+                <DeviceOptions />
+             </Popover>
+
              <IconButton
               onTouchTap={e=>this.openChartOptions(e)}
               tooltipPosition="bottom-right"
@@ -100,7 +124,6 @@ const mapStateToProps = (state) => {
 
   return {
     error: state.errors.find(e => !e.ack),
-    bitrate: state.selected.options.bitrate,
     devices: state.devices,
     path: state.selected.device && state.selected.device.path,
     hasSelected: !!state.selected.device,
