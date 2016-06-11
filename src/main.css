@@ -1,0 +1,15 @@
+@keyframes pulse {
+  0% {
+    fill: rgba(0, 0, 0, 0.870588);
+  }
+  50% {
+    fill: rgb(255, 64, 129);
+  }
+  100% {
+    fill: rgba(0, 0, 0, 0.870588);
+  }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
