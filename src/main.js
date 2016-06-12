@@ -37,16 +37,20 @@ chrome.storage.sync.get("settings", items=>{
   start(state)
 })
 
-function start(state={}) {
-  let store = createStore(vmonApp, state,  compose(
+var middleware = process.env.NODE_ENV==="production"
+  ? applyMiddleware(thunkMiddleware, deviceManager)
+  : compose(
       applyMiddleware(thunkMiddleware, deviceManager),
       devTools({
-        name: 'vmon app', realtime: true,
-        // hostname: 'localhost', port: 8000,
-        maxAge: 30, filters: { blacklist: [ 'DATA', 'GET_DEVICES'] }
+          name: 'Serial Voltage Monitor', realtime: true,
+          // hostname: 'localhost', port: 8000,
+          maxAge: 30, filters: { blacklist: [ 'GET_DEVICES'] }
         })
     )
-  )
+
+
+function start(state={}) {
+  let store = createStore(vmonApp, state,  middleware)
   listenWith(store)
 
   function select(state) {
