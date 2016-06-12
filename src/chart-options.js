@@ -10,9 +10,13 @@ import Slider from 'material-ui/Slider';
 import TextField from 'material-ui/TextField';
 
 import {configChart, configPin} from './actions'
+import {debounce} from 'lodash'
 
 function PinConfig (props) {
   var text = `Label for Analog Pin #${props.pin}`
+
+  const setColor = debounce(val=>props.configPin({color: val}), 250)
+
   return <div>
     <Checkbox
       style={{display: "inline-block", width: "auto"}}
@@ -28,7 +32,7 @@ function PinConfig (props) {
       type="color"
       value={props.color}
       disabled={!props.enabled}
-      onChange={(e,val)=>props.configPin({color: val})} />
+      onChange={(e)=>setColor(e.target.value)} />
   </div>
 }
 
