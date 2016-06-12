@@ -61,7 +61,6 @@ export class Dashboard extends Component {
     if (!this.props.path) devClass = "pulse"
 
     var err = this.props.error ? 'ERROR: ' + this.props.error.message : ''
-
     return <div>
              <IconMenu
                 onChange={(e,val)=>this.setDevice(val)}
@@ -105,6 +104,7 @@ export class Dashboard extends Component {
                  action="OK"
                  autoHideDuration={5000}
                  message={err}
+                 onActionTouchTap={()=>this.props.ackError(this.props.error && this.props.error.id)}
                  onRequestClose={() => this.props.ackError(this.props.error && this.props.error.id)}
                  open={!!this.props.error} />
              </div>
