@@ -71,7 +71,8 @@ export function connectDevice (device, options) {
   return dispatch => {
     dispatch(connect(device, options))
     return new Promise(resolve => {
-      chrome.serial.connect(device.path, options, conn => {
+      var opts = Object.assign({}, options, {name: device.displayName.replace(/_/g," ")})
+      chrome.serial.connect(device.path, opts, conn => {
         if (chrome.runtime.lastError) {
           resolve(dispatch(connectFailed(device, options, chrome.runtime.lastError)))
           return

@@ -58,7 +58,7 @@ export class Dashboard extends Component {
     }
 
     var devClass = ""
-    if (!this.props.hasSelected) devClass = "pulse"
+    if (!this.props.path) devClass = "pulse"
 
     var err = this.props.error ? 'ERROR: ' + this.props.error.message : ''
 
@@ -118,7 +118,7 @@ export class Dashboard extends Component {
 const mapStateToProps = (state) => {
 
   var status;
-  if (state.conn) status = "Connected to: " + state.selected.device.displayName.replace(/_/g, ' ')
+  if (state.conn) status = "Connected to: " + state.conn.name
   else if (state.selected.device) "Connecting to: " + state.selected.device.displayName.replace(/_/g, ' ')
   else status = "Not Connected"
 
@@ -126,7 +126,6 @@ const mapStateToProps = (state) => {
     error: state.errors.find(e => !e.ack),
     devices: state.devices,
     path: state.selected.device && state.selected.device.path,
-    hasSelected: !!state.selected.device,
     status
   }
 }
