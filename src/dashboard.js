@@ -6,13 +6,16 @@ import IconButton from 'material-ui/IconButton'
 import DeviceUSB from 'material-ui/svg-icons/device/usb'
 import EditorInsertChart from 'material-ui/svg-icons/editor/insert-chart'
 import ActionSettings from 'material-ui/svg-icons/action/settings'
+import ActionCode from 'material-ui/svg-icons/action/code'
 import IconMenu from 'material-ui/IconMenu'
 import Subheader from 'material-ui/Subheader'
 import Popover from 'material-ui/Popover'
 
 import ChartOptions from './chart-options'
 import DeviceOptions from './device-options'
+import ExampleCode from './example-code'
 import Monitor from './monitor'
+
 
 import { setDevice, setOptions, ackError } from './actions'
 
@@ -25,7 +28,9 @@ export class Dashboard extends Component {
       chartOptionsAnchor: null,
       chartOptionsOpen: false,
       deviceOptionsAnchor: null,
-      deviceOptionsOpen: false
+      deviceOptionsOpen: false,
+      exampleCodeOpen: false,
+      exampleCodeAnchor: null
     }
   }
   openChartOptions(e) {
@@ -34,6 +39,7 @@ export class Dashboard extends Component {
     this.setState({
       chartOptionsOpen: true,
       deviceOptionsOpen: false,
+      exampleCodeOpen: false,
       chartOptionsAnchor: e.currentTarget
     })
   }
@@ -43,9 +49,21 @@ export class Dashboard extends Component {
     this.setState({
       chartOptionsOpen: false,
       deviceOptionsOpen: true,
+      exampleCodeOpen: false,
       deviceOptionsAnchor: e.currentTarget
     })
   }
+  openExampleCode(e) {
+    e.preventDefault()
+
+    this.setState({
+      chartOptionsOpen: false,
+      deviceOptionsOpen: false,
+      exampleCodeOpen: true,
+      exampleCodeAnchor: e.currentTarget
+    })
+  }
+
   setDevice (path) {
     this.props.setDevice(this.props.devices.find(d => d.path === path))
   }
@@ -98,6 +116,21 @@ export class Dashboard extends Component {
                 <ChartOptions />
               </Popover>
              <Subheader style={{display: "inline-block", verticalAlign: "top", width:"auto"}}>{this.props.status}</Subheader>
+
+             <IconButton
+              style={{float:"right"}}
+              onTouchTap={e=>this.openExampleCode(e)}
+              tooltipPosition="bottom-left"
+              tooltip="Example code">
+               <ActionCode />
+             </IconButton>
+             <Popover
+                open={this.state.exampleCodeOpen}
+                anchorEl={this.state.exampleCodeAnchor}
+                onRequestClose={()=>this.setState({exampleCodeOpen: false})}>
+
+                <ExampleCode />
+              </Popover>
              <div>
 
                <Snackbar
