@@ -17,7 +17,7 @@ function downloadSketch(e) {
 
 export default function ExampleCode () {
   return <div style={{padding: 16}}>
-    <p>This sketch may be uploaded to an Arduino to feed voltage data to this app.</p>
+    <p>This sketch may be uploaded to an Arduino to feed data to this app.</p>
     <pre>
       <code
         className="allow-select"
