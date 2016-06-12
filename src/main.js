@@ -18,31 +18,65 @@ import devTools from 'remote-redux-devtools';
 import vmonApp from './reducers'
 
 import deviceManager, {listenWith} from './device-manager'
+import {debounce} from 'lodash'
 
+chrome.storage.sync.get("settings", items=>{
+  if (chrome.runtime.lastError) {
+    console.error(chrome.runtime.lastError)
+    return start()
+  } else if (!items.settings) {
+    return start()
+  }
+  var state= {
+    chart: items.settings.chart,
+    pins: items.settings.pins,
+    selected: {
+      options: items.settings.device
+    }
+  }
+  start(state)
+})
 
-let store = createStore(vmonApp, compose(
-    applyMiddleware(thunkMiddleware, deviceManager),
-    devTools({
-      name: 'vmon app', realtime: true,
-      // hostname: 'localhost', port: 8000,
-      maxAge: 30, filters: { blacklist: [ 'DATA', 'GET_DEVICES'] }
-      })
+function start(state={}) {
+  let store = createStore(vmonApp, state,  compose(
+      applyMiddleware(thunkMiddleware, deviceManager),
+      devTools({
+        name: 'vmon app', realtime: true,
+        // hostname: 'localhost', port: 8000,
+        maxAge: 30, filters: { blacklist: [ 'DATA', 'GET_DEVICES'] }
+        })
+    )
   )
-)
+  listenWith(store)
 
-listenWith(store)
+  function select(state) {
+    return {
+      chart: state.chart,
+      pins: state.pins,
+      device: state.selected && state.selected.options
+    }
+  }
+  let currentValue = null
+  store.subscribe(debounce(()=>{
+    let previousValue = currentValue
+    currentValue = select(store.getState())
+    if (!previousValue) return
 
+    if (previousValue.chart === currentValue.chart && previousValue.pins === currentValue.pins && previousValue.device === currentValue.device) return
 
+    chrome.storage.sync.set({settings: currentValue})
+  }, 1000))
 
-const App = () => (
-  <MuiThemeProvider muiTheme={getMuiTheme()}>
-    <Provider store={store}>
-      <Dashboard />
-    </Provider>
-  </MuiThemeProvider>
-);
+  const App = () => (
+    <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <Provider store={store}>
+        <Dashboard />
+      </Provider>
+    </MuiThemeProvider>
+  );
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('app')
-);
+  ReactDOM.render(
+    <App />,
+    document.getElementById('app')
+  );
+}
