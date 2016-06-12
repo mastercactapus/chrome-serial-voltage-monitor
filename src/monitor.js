@@ -83,11 +83,13 @@ export class Monitor extends Component {
     })
 
     var legend = this.props.showLegend && <Legend pins={pins} />
+    var labelOpts = {fontSize: 16}
 
     return <div>
       {legend}
       <SmoothieComponent
         grid={gridOpts}
+        labels={labelOpts}
         width={window.innerWidth-16}
         height={window.innerHeight-66}
         maxValue={5}
