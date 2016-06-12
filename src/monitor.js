@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import SmoothieComponent from 'react-smoothie'
 import { connect } from 'react-redux'
+import {throttle} from 'lodash'
 
 import eventBus from './event-bus'
 
@@ -58,7 +59,7 @@ export class Monitor extends Component {
   componentDidMount () {
     for (let i=0;i<16;i++) {
       this.ts[i] = this.refs.chart.addTimeSeries({}, {strokeStyle: this.props.color[i], lineWidth: 1})
-      this.tsEventFns[i] = data => this.tsEvent(i, data.value * 5 / 1023)
+      this.tsEventFns[i] = throttle(data => this.tsEvent(i, data.value * 5 / 1023),100)
       eventBus.on("pin_" + i, this.tsEventFns[i])
     }
   }
