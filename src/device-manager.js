@@ -87,7 +87,8 @@ class DataReader {
 }
 
 export function listenWith (store) {
-  setInterval(() => store.dispatch(refreshDevices()), 1000)
+  store.dispatch(refreshDevices())
+  setInterval(() => store.dispatch(refreshDevices()), 3000)
   chrome.serial.onReceiveError.addListener(info => {
     store.dispatch(error(info.error))
     store.dispatch(disconnectDevice(info.connectionId))
