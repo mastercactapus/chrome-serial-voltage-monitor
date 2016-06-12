@@ -25,6 +25,9 @@ function device (state = null , action) {
     case GET_DEVICES:
       // if our device drops from the list, remove the selection
       if (state && !action.devices.find(d => d.path === state.path)) return null
+
+    case CONNECT_FAILED:
+      return null
     default:
       return state
   }
